@@ -47,7 +47,7 @@ void WaveFile::addPause(float durationSeconds, int channel) {
     std::cout << "\tDuration: " << durationSeconds << " seconds" << std::endl;
 }
 
-void WaveFile::addSinWave(float freqHz, float durationSeconds, int channel) {
+void WaveFile::addSinWave(float freqHz, float durationSeconds, int channel, int amp) {
     if (channel > this->header.numChannels)
         return;
 
@@ -55,7 +55,7 @@ void WaveFile::addSinWave(float freqHz, float durationSeconds, int channel) {
 
     for (int i = 0; i < samplesNum; i++)
     {
-        short sample = SHRT_MAX * sin(getPhaseFromCounter(i, freqHz));
+        short sample = amp * sin(getPhaseFromCounter(i, freqHz));
 
         this->samples.at(channel - 1).push_back(sample);
     }
@@ -67,7 +67,7 @@ void WaveFile::addSinWave(float freqHz, float durationSeconds, int channel) {
     std::cout << "\tDuration: " << durationSeconds << " seconds" << std::endl;
 }
 
-void WaveFile::addSquareWave(float freqHz, float durationSeconds, int channel) {
+void WaveFile::addSquareWave(float freqHz, float durationSeconds, int channel, int amp) {
     if (channel > this->header.numChannels)
         return;
 
@@ -75,7 +75,7 @@ void WaveFile::addSquareWave(float freqHz, float durationSeconds, int channel) {
 
     for (int i = 0; i < samplesNum; i++)
     {
-        short sample = SHRT_MAX * (sin(getPhaseFromCounter(i, freqHz)) > 0 ? 1 : -1);
+        short sample = amp * (sin(getPhaseFromCounter(i, freqHz)) > 0 ? 1 : -1);
         this->samples.at(channel - 1).push_back(sample);
     }
 
@@ -87,7 +87,7 @@ void WaveFile::addSquareWave(float freqHz, float durationSeconds, int channel) {
 }
 
 // TODO: implement
-void WaveFile::addSawtoothWave(float freqHz, float durationSeconds,int channel) {
+void WaveFile::addSawtoothWave(float freqHz, float durationSeconds,int channel, int amp) {
     if (channel > this->header.numChannels)
         return;
 
@@ -95,13 +95,13 @@ void WaveFile::addSawtoothWave(float freqHz, float durationSeconds,int channel) 
 
     for (int i = 0; i < samplesNum; i++)
     {
-        short sample = SHRT_MAX * (2 * abs(2 * (i * freqHz / header.sampleRate) - floor(2 * (i * freqHz / header.sampleRate))) - 1);
+        short sample = amp * (2 * abs(2 * (i * freqHz / header.sampleRate) - floor(2 * (i * freqHz / header.sampleRate))) - 1);
         this->samples.at(channel - 1).push_back(sample);
     }
 }
 
 // TODO: implement
-void WaveFile::addTriangleWave(float freqHz, float durationSeconds, int channel) {
+void WaveFile::addTriangleWave(float freqHz, float durationSeconds, int channel, int amp) {
     if (channel > this->header.numChannels)
         return;
 
@@ -111,7 +111,7 @@ void WaveFile::addTriangleWave(float freqHz, float durationSeconds, int channel)
     {
         double cutPhase = getPhaseFromCounter(i, freqHz) / M_PI;
 
-        short sample = SHRT_MAX * (2 * fabs(2 * (cutPhase - round(cutPhase))) - 1);
+        short sample = amp * (2 * fabs(2 * (cutPhase - round(cutPhase))) - 1);
         this->samples.at(channel - 1).push_back(sample);
     }
 }

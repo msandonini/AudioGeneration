@@ -47,10 +47,10 @@ public:
     explicit WaveFile(uint16_t numChannels = 1, uint32_t sampleRate = 44100);
 
     void addPause(float durationSeconds, int channel = 1);
-    void addSinWave(float freqHz, float durationSeconds, int channel = 1);
-    void addSquareWave(float freqHz, float durationSeconds, int channel = 1);
-    void addSawtoothWave(float freqHz, float durationSeconds, int channel = 1);
-    void addTriangleWave(float freqHz, float durationSeconds, int channel = 1);
+    void addSinWave(float freqHz, float durationSeconds, int channel = 1, int amp = INT16_MAX);
+    void addSquareWave(float freqHz, float durationSeconds, int channel = 1, int amp = INT16_MAX);
+    void addSawtoothWave(float freqHz, float durationSeconds, int channel = 1, int amp = INT16_MAX);
+    void addTriangleWave(float freqHz, float durationSeconds, int channel = 1, int amp = INT16_MAX);
 
     void adjustChannelsSizes();
 

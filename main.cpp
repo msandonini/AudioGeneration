@@ -25,18 +25,20 @@ int main() {
     wave.addSinWave(Audio::Tuning::f440hz::t4::G, 2, 3);
     //*/
 
-    wave.addSinWave(Audio::Tuning::f440hz::t4::C, 2, 1);
+    int amp = INT16_MAX / 2;
+
+    wave.addSinWave(Audio::Tuning::f440hz::t4::C, 2, 1, amp);
     wave.adjustChannelsSizes();
 
-    wave.addSinWave(Audio::Tuning::f440hz::t4::E, 2, 2);
+    wave.addSinWave(Audio::Tuning::f440hz::t4::E, 2, 2, amp);
     wave.adjustChannelsSizes();
 
-    wave.addSinWave(Audio::Tuning::f440hz::t4::G, 2, 3);
+    wave.addSinWave(Audio::Tuning::f440hz::t4::G, 2, 3, amp);
     wave.adjustChannelsSizes();
 
-    wave.addSinWave(Audio::Tuning::f440hz::t4::C, 2, 1);
-    wave.addSinWave(Audio::Tuning::f440hz::t4::E, 2, 2);
-    wave.addSinWave(Audio::Tuning::f440hz::t4::G, 2, 3);
+    wave.addSinWave(Audio::Tuning::f440hz::t4::C, 2, 1, amp);
+    wave.addSinWave(Audio::Tuning::f440hz::t4::E, 2, 2, amp);
+    wave.addSinWave(Audio::Tuning::f440hz::t4::G, 2, 3, amp);
 
     wave.addPause(1);
 
