@@ -5,7 +5,7 @@
 #ifndef AUDIOGENERATION_MUSICNOTESFREQUENCIES_H
 #define AUDIOGENERATION_MUSICNOTESFREQUENCIES_H
 
-namespace Audio::Tuning::f440hz {   // Middle A is 440Hz
+namespace Audio::Notes::f440hz {   // Middle A is 440Hz
     namespace t0 {
         const float C = 16.35;
         const float Csh = 17.32;

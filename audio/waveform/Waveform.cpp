@@ -3,200 +3,91 @@
 //
 
 #include "Waveform.h"
-
-#include <iostream>
 #include <cmath>
 
-//TODO-DEBUG
-#ifndef M_PI
-#define M_PI 3.14
-#endif
+namespace Audio {
+    void Waveform::makeSin(float freq) {
+        int samplesNum = getSamplesNum();
 
+        delete[] this->samples;
+        this->samples = new float[samplesNum];
 
-Waveform::Waveform(int sampleRate, int duration, float freq, int form) {
-    this->sampleRate = sampleRate;
-    this->duration = duration;
-    this->freq = freq;
-    this->form = form;
-
-    switch (form) {
-        case WAVEFORM_SIN:
-            generateSinWave();
-            break;
-        case WAVEFORM_SQUARE:
-            generateSquareWave();
-            break;
-        case WAVEFORM_TRIANGLE:
-            generateTriangleWave();
-            break;
-        case WAVEFORM_SAWTOOTH:
-            generateSawtoothWave();
-            break;
-        default:
-            std::cerr << "Invalid wave form" << std::endl;
-            break;
-    }
-}
-
-
-Waveform::Waveform(float *wave, int sampleRate, float freq, int duration) {
-    this->sampleRate = sampleRate;
-    this->freq = freq;
-    this->duration = duration;
-
-    this->form = WAVEFORM_UNKNOWN;
-
-    int samplesNum = (int) (sampleRate * duration);
-
-    if (this->wave != nullptr) {
-        delete[] this->wave;
-        this->wave = nullptr;
-    }
-    this->wave = new float[samplesNum];
-
-    for (int i = 0; i < samplesNum; ++i) {
-        this->wave[i] = wave[i];
-    }
-}
-
-Waveform::Waveform(float **waves, int wavesNum, int sampleRate, int duration) {
-    this->sampleRate = sampleRate;
-    this->freq = -1;
-    this->duration = duration;
-
-    this->form = WAVEFORM_MIXED;
-
-    int samplesNum = (int) (sampleRate * duration);
-
-    if (this->wave != nullptr) {
-        delete[] this->wave;
-        this->wave = nullptr;
-    }
-    this->wave = new float[samplesNum];
-    for (int i = 0; i < samplesNum; i ++) {
-        this->wave[i] = 0;
-    }
-
-    float tot;
-    for (int i = 0; i < samplesNum; ++i) {
-        tot = 0;
-
-        for (int j = 0; j < wavesNum; ++j) {
-            tot += waves[j][i];
+        for (int i = 0; i < samplesNum; i++)
+        {
+            float time = (float) i / (float) this->sampleRate;
+            this->samples[i] = sinf((float)(2 * M_PI * freq * time));
         }
-
-        this->wave[i] = tot;
     }
-}
 
-Waveform::Waveform(Waveform &other) {
-    this->sampleRate = other.sampleRate;
-    this->freq = other.freq;
-    this->duration = other.duration;
+    void Waveform::makeSquare(float freq) {
+        int samplesNum = getSamplesNum();
 
-    this->form = other.form;
+        delete[] this->samples;
+        this->samples = new float[samplesNum];
 
-    int samplesNum = (int) (this->sampleRate * this->duration);
-
-    if (this->wave != nullptr) {
-        delete[] this->wave;
-        this->wave = nullptr;
+        for (int i = 0; i < samplesNum; i++)
+        {
+            float time = (float) i / (float) this->sampleRate;
+            this->samples[i] = (float)(sinf((float)(2 * M_PI * freq * time)) > 0 ? 1 : -1) * amp;
+        }
     }
-    this->wave = new float[samplesNum];
 
-    for (int i = 0; i < samplesNum; ++i) {
-        this->wave[i] = other.wave[i];
+    void Waveform::makeSawtooth(float freq) {
+        int samplesNum = getSamplesNum();
+
+        delete[] this->samples;
+        this->samples = new float[samplesNum];
+
+        for (int i = 0; i < samplesNum; i++) {
+            this->samples[i] = 2 *
+                    fabsf(2 * ((float) i * freq / (float) this->sampleRate) -
+                    floorf(2 * ((float) i * freq / (float) this->sampleRate))) - 1;
+        }
     }
-}
 
-Waveform::~Waveform() {
-    if (this->wave != nullptr) {
-        delete[] this->wave;
-        this->wave = nullptr;
+    void Waveform::makeTriangular(float freq) {
+        int samplesNum = getSamplesNum();
+
+        delete[] this->samples;
+        this->samples = new float[samplesNum];
+
+        for (int i = 0; i < samplesNum; i++) {
+            float time = (float) i / (float) this->sampleRate;
+
+            float cutPhase = 2 * time * freq / (float) this->sampleRate;
+            this->samples[i] = 2 * fabsf(2 * (cutPhase - roundf(cutPhase))) - 1;
+        }
     }
-}
 
+    Waveform::Waveform(int sampleRate, float durationSeconds, float amp) {
+        this->sampleRate = sampleRate;
+        this->durationSeconds = durationSeconds;
+        this->amp = amp;
 
-float *Waveform::getWave() const {
-    return wave;
-}
-
-int Waveform::getSampleRate() const {
-    return sampleRate;
-}
-
-
-float Waveform::getFreq() const {
-    return freq;
-}
-
-int Waveform::getDuration() const {
-    return duration;
-}
-
-int Waveform::getForm() const {
-    return form;
-}
-
-void Waveform::generateSinWave() {
-    int samplesNum = (int) (this->sampleRate * this->duration);
-
-    if (this->wave != nullptr) {
-        delete[] this->wave;
-        this->wave = nullptr;
+        samples = new float[getSamplesNum()];
     }
-    this->wave = new float[samplesNum];
 
-    for (int i = 0; i < samplesNum; i++)
-    {
-        float time = (float) i / (float) this->sampleRate;
-        this->wave[i] = sin(2 * M_PI * this->freq * time);
+    Waveform::~Waveform() {
+        delete[] samples;
     }
-}
-void Waveform::generateSquareWave() {
-    int samplesNum = (int) (this->sampleRate * this->duration);
 
-    if (this->wave != nullptr) {
-        delete[] this->wave;
-        this->wave = nullptr;
+    int Waveform::getSampleRate() const {
+        return sampleRate;
     }
-    this->wave = new float[samplesNum];
 
-    for (int i = 0; i < samplesNum; i++)
-    {
-        float time = (float) i / (float) this->sampleRate;
-        this->wave[i] = (sin(2 * M_PI * this->freq * time) > 0 ? 1 : -1);
+    float Waveform::getDurationSeconds() const {
+        return durationSeconds;
     }
-}
 
-void Waveform::generateSawtoothWave() {
-    int samplesNum = (int) (this->sampleRate * this->duration);
-
-    if (this->wave != nullptr) {
-        delete[] this->wave;
-        this->wave = nullptr;
+    float Waveform::getAmp() const {
+        return amp;
     }
-    this->wave = new float[samplesNum];
 
-    for (int i = 0; i < samplesNum; i++) {
-        this->wave[i] = 2 * fabsf(2 * ((float) i * this->freq / (float) this->sampleRate) - floorf(2 * ((float) i * this->freq / (float) this->sampleRate))) - 1;
+    float *Waveform::getSamples() const {
+        return samples;
     }
-}
 
-void Waveform::generateTriangleWave() {
-    int samplesNum = (int) (this->sampleRate * this->duration);
-
-    if (this->wave != nullptr) {
-        delete[] this->wave;
-        this->wave = nullptr;
+    int Waveform::getSamplesNum() const {
+        return (int)((float) sampleRate * durationSeconds);
     }
-    this->wave = new float[samplesNum];
-
-    for (int i = 0; i < samplesNum; i++) {
-        float time = (float) i / (float) this->sampleRate;
-
-        float cutPhase = 2 * time * this->freq / (float) this->sampleRate;
-
-        this->wave[i] = 2 * fabsf(2 * (cutPhase - roundf(cutPhase))) - 1;
-    }
-}
+} // Audio

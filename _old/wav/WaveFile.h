@@ -9,7 +9,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include "../waveform/Waveform.h"
+#include "../waveform/_Waveform.h"
 
 // TODO: Remove standard namespace and apply custom one
 using namespace std;
@@ -60,7 +60,7 @@ public:
     float getDurationSeconds();
     float getTotalSamplesNumber(int channel = 1);
 
-    static void writeFile(Waveform wf, string fpath);
+    static void writeFile(_Waveform wf, string fpath);
 };
 
 #endif //AUDIOGENERATION_WAVEFILE_H

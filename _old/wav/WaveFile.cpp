@@ -205,7 +205,7 @@ void WaveFile::writeLittleEndian(ofstream &file, uint16_t sample) {
     file.write(data, sizeof(data));
 }
 
-void WaveFile::writeFile(Waveform wf, string fpath) {
+void WaveFile::writeFile(_Waveform wf, string fpath) {
     // Mono
     _WavHeader header = {
             {'R', 'I', 'F', 'F'},
