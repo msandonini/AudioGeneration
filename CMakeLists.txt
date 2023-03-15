@@ -7,4 +7,5 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(AudioGeneration
         main.cpp
-        runtime/MusicNotesFrequencies.h runtime/wav/WaveFile.cpp)
+        runtime/MusicNotesFrequencies.h runtime/wav/WaveFile.cpp
+        runtime/waveform/Waveform.cpp runtime/waveform/Waveform.h)
