@@ -7,6 +7,12 @@
 #include <iostream>
 #include <cmath>
 
+//TODO-DEBUG
+#ifndef M_PI
+#define M_PI 3.14
+#endif
+
+
 Waveform::Waveform(int sampleRate, int duration, float freq, int form) {
     this->sampleRate = sampleRate;
     this->duration = duration;
@@ -32,10 +38,13 @@ Waveform::Waveform(int sampleRate, int duration, float freq, int form) {
     }
 }
 
-Waveform::Waveform(const float *wave, int sampleRate, float freq, int duration) {
+
+Waveform::Waveform(float *wave, int sampleRate, float freq, int duration) {
     this->sampleRate = sampleRate;
     this->freq = freq;
     this->duration = duration;
+
+    this->form = WAVEFORM_UNKNOWN;
 
     int samplesNum = (int) (sampleRate * duration);
 
@@ -50,9 +59,9 @@ Waveform::Waveform(const float *wave, int sampleRate, float freq, int duration) 
     }
 }
 
-Waveform::Waveform(const float **waves, int wavesNum, int sampleRate, float freq, int duration) {
+Waveform::Waveform(float **waves, int wavesNum, int sampleRate, int duration) {
     this->sampleRate = sampleRate;
-    this->freq = freq;
+    this->freq = -1;
     this->duration = duration;
 
     this->form = WAVEFORM_MIXED;
@@ -64,19 +73,23 @@ Waveform::Waveform(const float **waves, int wavesNum, int sampleRate, float freq
         this->wave = nullptr;
     }
     this->wave = new float[samplesNum];
+    for (int i = 0; i < samplesNum; i ++) {
+        this->wave[i] = 0;
+    }
 
+    float tot;
     for (int i = 0; i < samplesNum; ++i) {
-        float tot = 0;
+        tot = 0;
 
         for (int j = 0; j < wavesNum; ++j) {
-            tot += waves[i][j];
+            tot += waves[j][i];
         }
 
         this->wave[i] = tot;
     }
 }
 
-Waveform::Waveform(const Waveform &other) {
+Waveform::Waveform(Waveform &other) {
     this->sampleRate = other.sampleRate;
     this->freq = other.freq;
     this->duration = other.duration;

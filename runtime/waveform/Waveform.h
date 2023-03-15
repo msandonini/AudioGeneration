@@ -5,6 +5,7 @@
 #ifndef AUDIOGENERATION_WAVEFORM_H
 #define AUDIOGENERATION_WAVEFORM_H
 
+const int WAVEFORM_UNKNOWN = -2;
 const int WAVEFORM_MIXED = -1;
 const int WAVEFORM_SIN = 0;
 const int WAVEFORM_SQUARE = 1;
@@ -27,20 +28,20 @@ protected:
     void generateTriangleWave();
 public:
     Waveform(int sampleRate, int duration, float freq, int form);
-    Waveform(const float *wave, int sampleRate, float freq, int duration);
-    Waveform(const float **waves, int wavesNum, int sampleRate, float freq, int duration);
-    Waveform(const Waveform &other);
+    Waveform(float *wave, int sampleRate, float freq, int duration);
+    Waveform(float **waves, int wavesNum, int sampleRate, int duration);
+    Waveform(Waveform &other);
     ~Waveform();
 
-    float *getWave() const;
+    [[nodiscard]] float *getWave() const;
 
-    int getSampleRate() const;
+    [[nodiscard]] int getSampleRate() const;
 
-    float getFreq() const;
+    [[nodiscard]] float getFreq() const;
 
-    int getDuration() const;
+    [[nodiscard]] int getDuration() const;
 
-    int getForm() const;
+    [[nodiscard]] int getForm() const;
 };
 
 

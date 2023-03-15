@@ -9,6 +9,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include "../waveform/Waveform.h"
 
 // TODO: Remove standard namespace and apply custom one
 using namespace std;
@@ -35,7 +36,7 @@ private:
     _WavHeader header;
     vector<vector<short>> samples;
 
-    void writeLittleEndian(ofstream &file, uint16_t sample);
+    static void writeLittleEndian(ofstream &file, uint16_t sample);
     double getPhaseFromCounter(int counter, float frequency);
 /*
     void writeSinWave(float freqHz, int durationSeconds);
@@ -58,6 +59,8 @@ public:
 
     float getDurationSeconds();
     float getTotalSamplesNumber(int channel = 1);
+
+    static void writeFile(Waveform wf, string fpath);
 };
 
 #endif //AUDIOGENERATION_WAVEFILE_H

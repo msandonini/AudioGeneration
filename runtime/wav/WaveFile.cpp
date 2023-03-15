@@ -8,6 +8,11 @@
 #include <cmath>
 #include <iostream>
 
+//TODO-DEBUG
+#ifndef M_PI
+#define M_PI 3.14
+#endif
+
 WaveFile::WaveFile(uint16_t numChannels, uint32_t sampleRate) {
     this->header = {
             {'R', 'I', 'F', 'F'},
@@ -198,4 +203,57 @@ void WaveFile::writeLittleEndian(ofstream &file, uint16_t sample) {
     data[0] = sample & 0xff;
     data[1] = (sample >> 8) & 0xff;
     file.write(data, sizeof(data));
+}
+
+void WaveFile::writeFile(Waveform wf, string fpath) {
+    // Mono
+    _WavHeader header = {
+            {'R', 'I', 'F', 'F'},
+            0,
+            {'W', 'A', 'V', 'E'},
+            {'f', 'm', 't', ' '},
+            16,
+            1,
+            1,
+            static_cast<uint32_t>(wf.getSampleRate()),
+            static_cast<uint32_t>(wf.getSampleRate() * 2),
+            ((uint16_t) (2)),
+            16,
+            {'d', 'a', 't', 'a'},
+            0
+    };
+
+    header.subChunk2Size = (wf.getSampleRate() * wf.getDuration()) * header.numChannels * (header.bitsPerSample / 8);
+    header.chunkSize = 36 + header.subChunk2Size;
+    header.byteRate = header.sampleRate * header.numChannels * (header.bitsPerSample / 8);
+
+    std::cout << "Writing header" << std::endl;
+
+    ofstream file(fpath, std::ios::binary | std::ios::out);
+    file.write((char*)&header, sizeof(header));
+
+    std::cout << "Calculating max to get amplitude" << std::endl;
+    float max = 0;
+
+    for (int i = 0; i < (wf.getSampleRate() * wf.getDuration()); i ++) {
+        if (wf.getWave()[i] > max) {
+            max = wf.getWave()[i];
+        }
+    }
+    std::cout << "Max: " << max << std::endl;
+
+    max *= INT16_MAX * 0.1;
+
+    std::cout << "Amp multiplier: " << max << std::endl;
+
+    std::cout << "Writing data" << std::endl;
+
+    for (int i = 0; i < (wf.getSampleRate() * wf.getDuration()); i ++) {
+        auto sample = (short) (wf.getWave()[i] * max);
+        writeLittleEndian(file, sample);
+    }
+
+    file.close();
+
+    std::cout << "File saved at position: " << fpath << std::endl;
 }
