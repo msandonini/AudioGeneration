@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "runtime/wav/WaveFile.h"
-#include "runtime/MusicNotesFrequencies.h"
+#include "audio/wav/WaveFile.h"
+#include "audio/MusicNotesFrequencies.h"
 
 using namespace std;
 
